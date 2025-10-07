@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Expert Polyhomes - Premium mosquito mesh solutions in Nairobi. Custom rollers, sliders, fixed, and magnetic nets for your home.">
+  <meta name="keywords" content="mosquito nets Nairobi, window screens Kenya, insect mesh, rollers, sliders, magnetic nets, home protection">
+  <title>EXPERT POLYHOMES | Premium Mosquito Net Solutions in Nairobi</title>
+  
+  <!-- Preload critical resources -->
+  <link rel="preload" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" as="style"/>
+  <link rel="preload" href="https://unpkg.com/aos@2.3.1/dist/aos.css" as="style" />
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style" />
+  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="favicon.ico"> 
+</head>
+<body>
+  <!-- Trust Badge Ribbon -->
+  <div class="trust-ribbon">
+    <div class="container">
+      <span>🏆 Best Mosquito Net Installers in Nairobi | ✅ 10-Year Warranty | 🚀 Free Installation Quote</span>
+    </div>
+  </div>
+
+  <!-- Service Area Badge -->
+  <div class="service-badge">
+    <span>Service Area: Nairobi & Surrounding Counties</span>
+  </div>
+
+  <!-- AR View Button -->
+  <button id="arView" class="ar-button" aria-label="Open AR View to measure windows">
+    <i class="fas fa-ruler-combined"></i> AR Measure
+  </button>
+
+  <!-- Sticky Quote Banner -->
+  <div class="sticky-banner" id="stickyBanner">
+    <p>🦟 Mosquito-Free Home Guaranteed! <a href="#quote" class="btn-primary">Get Free Quote Now</a></p>
+  </div>
+
+  <!-- Live Chat Button -->
+  <button class="chat-button" id="chatButton" aria-label="Open live chat">
+    <i class="fas fa-comments"></i> Live Help
+  </button>
+
+  <!-- AR View Modal -->
+  <div id="arModal" class="modal" style="display:none;" role="dialog" aria-labelledby="arModalTitle">
+    <div class="modal-container">
+      <button class="modal-close" id="closeArModal" aria-label="Close AR Modal">&times;</button>
+      <div class="modal-header">
+        <h2 id="arModalTitle">Measure Your Window or Door</h2>
+        <p>Place a standard card (e.g., credit card, 8.5cm wide) against your window. Adjust the ruler to match, then enter measurements.</p>
+      </div>
+      <div class="modal-body">
+        <div style="position:relative;">
+          <video id="arCamera" autoplay playsinline style="width:100%;max-width:400px;border-radius:8px;"></video>
+          <div id="rulerOverlay" style="position:absolute;top:50%;left:10%;width:60px;height:8px;background:#133A41;opacity:0.7;cursor:ew-resize;border-radius:4px;"></div>
+          <span id="rulerLength" style="position:absolute;top:calc(50% + 12px);left:10%;color:#133A41;font-weight:bold;"></span>
+        </div>
+        <form id="arDimensionForm" style="margin-top:1em;">
+          <div class="input-group">
+            <label for="arWidth">Window Width (cm)</label>
+            <input type="number" id="arWidth" min="10" step="0.1" required aria-required="true">
+          </div>
+          <div class="input-group">
+            <label for="arHeight">Window Height (cm)</label>
+            <input type="number" id="arHeight" min="10" step="0.1" required aria-required="true">
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">Submit for Quote</button>
+          </div>
+        </form>
+        <div style="font-size:0.9em;color:#888;margin-top:0.5em;">
+          * Use a credit card for accurate scaling. Contact us for assistance.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Utility Bar -->
+  <div class="utility-bar">
+    <div class="container">
+      <div class="features">
+        <span id="live-time"></span>
+        <span id="weather-display"></span>
+        <span class="trust-indicators">
+          <i class="fas fa-shield-alt"></i> Secure Payment | 
+          <i class="fas fa-truck"></i> Free Installation | 
+          <i class="fas fa-award"></i> Quality Guaranteed
+        </span>
+      </div>
+      <div class="auth-section">
+        <span id="user-greeting"></span>
+        <a href="#" id="signInLink" aria-label="Sign In to your account">Sign In</a>
+        <a href="/dashboard" id="dashboardLink" aria-label="Go to your dashboard">Dashboard</a>
+        <a href="#" id="logoutLink" aria-label="Log out">Logout</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="container">
+      <div class="nav-brand">
+        <a href="/" class="logo" aria-label="Expert Polyhomes Home">
+          <span class="logo-icon">EP</span>
+          <span class="logo-text">EXPERT POLYHOMES</span>
+        </a>
+        <div class="contact-header">
+          <span class="phone-number"><i class="fas fa-phone"></i> +254 723 544 097</span>
+          <span class="email-contact"><i class="fas fa-envelope"></i> polyhomesexpert@gmail.com</span>
+        </div>
+        <div class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu">
+          <span class="toggle-bar"></span>
+          <span class="toggle-bar"></span>
+          <span class="toggle-bar"></span>
+        </div>
+      </div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="nav-link active" data-section="home">Home</a></li>
+        <li><a href="#solutions" class="nav-link" data-section="solutions">Solutions</a></li>
+        <li><a href="#design-explorer" class="nav-link" data-section="design-explorer">Design Explorer</a></li>
+        <li><a href="#gallery" class="nav-link" data-section="gallery">Our Work</a></li>
+        <li><a href="#process" class="nav-link" data-section="process">Our Process</a></li>
+        <li><a href="#testimonials" class="nav-link" data-section="testimonials">Reviews</a></li>
+        <li><a href="#faq" class="nav-link" data-section="faq">FAQ</a></li>
+        <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
+        <li class="nav-cta"><a href="#quote" class="btn-primary">Get a Quote</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home" data-aos="fade-up">
+    <div class="hero-bg" style="background: url('Assets/images/hero/hero-window-screen.jpg') no-repeat center/cover;"></div>
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title">Protect Your Home with <span>Aesthetic Mosquito Nets</span></h1>
+        <p class="hero-subtitle">Discover rollers, sliders, fixed, and magnetic nets tailored for Nairobi homes.</p>
+        
+        <!-- Trust Badges -->
+        <div class="trust-badges">
+          <div class="trust-badge">
+            <i class="fas fa-home"></i>
+            <span>500+ Homes Protected</span>
+          </div>
+          <div class="trust-badge">
+            <i class="fas fa-star"></i>
+            <span>4.9/5 Rating</span>
+          </div>
+          <div class="trust-badge">
+            <i class="fas fa-clock"></i>
+            <span>Same Day Installation</span>
+          </div>
+        </div>
+
+        <div class="hero-actions">
+          <a href="#quote" class="btn-primary btn-lg">
+            <i class="fas fa-calculator"></i> Get Free Quote
+          </a>
+          <a href="#gallery" class="btn-secondary btn-lg">
+            <i class="fas fa-images"></i> View Our Work
+          </a>
+        </div>
+
+        <!-- Material Selector -->
+        <div class="material-selector" role="radiogroup" aria-label="Select net material for preview">
+          <label class="material-option">
+            <input type="radio" name="material" value="fiberglass" checked aria-label="Fiberglass material">
+            Fiberglass
+          </label>
+          <label class="material-option">
+            <input type="radio" name="material" value="polyester" aria-label="Polyester material">
+            Polyester
+          </label>
+          <label class="material-option">
+            <input type="radio" name="material" value="stainless" aria-label="Stainless steel material">
+            Stainless Steel
+          </label>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="quick-stats">
+          <div class="stat">
+            <span class="stat-number" data-count="1000">0</span>
+            <span class="stat-label">Windows Installed</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" data-count="98">0</span>
+            <span class="stat-label">% Satisfaction</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" data-count="24">0</span>
+            <span class="stat-label">Hr Support</span>
+          </div>
+        </div>
+      </div>
+      <!-- 3D Model Container -->
+<div class="hero-visual">
+  <div class="product-visualization" id="product3d">
+    <!-- Loading State -->
+    <div class="model-loading">
+      <div class="loading-spinner"></div>
+      <p>Loading Window Frames...</p>
+    </div>
+    
+    <!-- Model Controls -->
+    <div class="model-controls">
+      <button class="control-btn" id="rotateModel" aria-label="Auto Rotate">
+        <i class="fas fa-sync"></i>
+      </button>
+      <button class="control-btn" id="resetModel" aria-label="Reset View">
+        <i class="fas fa-home"></i>
+      </button>
+    </div>
+    
+    <!-- Frame Type Info -->
+    <div class="material-info" id="frameInfo">
+      <h4>Casement Window</h4>
+      <p>Fixed frame • Easy installation • Perfect fit</p>
+    </div>
+  </div>
+</div>
+    </div>
+  </section>
+
+  <!-- Before/After Section -->
+  <section class="before-after" id="gallery" data-aos="fade-up">
+    <div class="container">
+      <div class="section-header">
+        <h2>Transform Your <span>Windows</span></h2>
+        <p>See the difference our professional installation makes</p>
+      </div>
+      <div class="comparison-slider">
+        <div class="before">
+          <img src="Assets/images/gallery/window-before.jpg" alt="Window without mosquito net" loading="lazy">
+          <span class="label">Before</span>
+        </div>
+        <div class="after">
+          <img src="Assets/images/gallery/window-after.jpg" alt="Window with mosquito net installed" loading="lazy">
+          <span class="label">After</span>
+        </div>
+        <div class="slider-handle"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solutions Section -->
+  <section class="solutions" id="solutions" data-aos="fade-up" data-aos-delay="100">
+    <div class="container">
+      <div class="section-header">
+        <h2>Our <span>Premium</span> Solutions</h2>
+        <p>High-quality mosquito nets for every home and budget</p>
+      </div>
+      
+      <!-- Features Ribbon -->
+      <div class="features-ribbon">
+        <div class="feature-item">
+          <i class="fas fa-shield-alt"></i>
+          <span>10-Year Warranty</span>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-tools"></i>
+          <span>Professional Installation</span>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-leaf"></i>
+          <span>Eco-Friendly Materials</span>
+        </div>
+        <div class="feature-item">
+          <i class="fas fa-clock"></i>
+          <span>Same Day Service</span>
+        </div>
+      </div>
+
+      <div class="solutions-grid">
+        <div class="solution-card basic" data-aos="zoom-in" data-aos-delay="200">
+          <div class="popular-badge">Most Affordable</div>
+          <div class="card-header">
+            <h3>Essential Protection</h3>
+            <div class="price-badge">From KES 1,500/m²</div>
+          </div>
+          <div class="card-body">
+            <div class="card-visual">
+              <img src="Assets/images/solutions/magneticmesh1.jfif" alt="Basic Aluminum Mesh" loading="eager">
+            </div>
+            <ul class="card-features">
+              <li><i class="fas fa-check"></i> Durable aluminium frames</li>
+              <li><i class="fas fa-check"></i> Fiberglass mesh (5-year warranty)</li>
+              <li><i class="fas fa-check"></i> Fixed or magnetic options</li>
+              <li><i class="fas fa-check"></i> Easy installation</li>
+            </ul>
+          </div>
+          <div class="card-footer">
+            <a href="essential.html" class="btn-outline">View Details</a>
+            <a href="#quote" class="btn-primary quick-order" data-type="essential">Quick Order</a>
+            <span class="best-for">Best for: Rentals & Budget Homes</span>
+          </div>
+        </div>
+        <div class="solution-card standard" data-aos="zoom-in" data-aos-delay="300">
+          <div class="popular-badge">Most Popular</div>
+          <div class="card-header">
+            <h3>Standard Plus</h3>
+            <div class="price-badge">From KES 2,800/m²</div>
+          </div>
+          <div class="card-body">
+            <div class="card-visual">
+              <img src="Assets/images/solutions/windowmesh3.jfif" alt="Retractable Mesh" loading="eager">
+            </div>
+            <ul class="card-features">
+              <li><i class="fas fa-check"></i> Retractable or slider systems</li>
+              <li><i class="fas fa-check"></i> Anti-dust polyester mesh</li>
+              <li><i class="fas fa-check"></i> Child-safe mechanisms</li>
+              <li><i class="fas fa-check"></i> 8-year warranty</li>
+            </ul>
+          </div>
+          <div class="card-footer">
+            <a href="standard.html" class="btn-outline">View Details</a>
+            <a href="#quote" class="btn-primary quick-order" data-type="standard">Quick Order</a>
+            <span class="best-for">Best for: Family Homes</span>
+          </div>
+        </div>
+        <div class="solution-card premium" data-aos="zoom-in" data-aos-delay="400">
+          <div class="popular-badge">Premium Choice</div>
+          <div class="card-header">
+            <h3>Premium Comfort</h3>
+            <div class="price-badge">From KES 4,500/m²</div>
+          </div>
+          <div class="card-body">
+            <div class="card-visual">
+              <img src="Assets/images/solutions/doormesh1.jfif" alt="Magnetic Mesh" loading="eager">
+            </div>
+            <ul class="card-features">
+              <li><i class="fas fa-check"></i> Roller or magnetic systems</li>
+              <li><i class="fas fa-check"></i> Pet-resistant stainless mesh</li>
+              <li><i class="fas fa-check"></i> Custom color matching</li>
+              <li><i class="fas fa-check"></i> 10-year warranty</li>
+            </ul>
+          </div>
+          <div class="card-footer">
+            <a href="premium.html" class="btn-outline">View Details</a>
+            <a href="#quote" class="btn-primary quick-order" data-type="premium">Quick Order</a>
+            <span class="best-for">Best for: Luxury Homes & Offices</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service Area Section -->
+  <section class="service-area" data-aos="fade-up">
+    <div class="container">
+      <div class="section-header">
+        <h2>We Serve <span>All Nairobi</span> Areas</h2>
+        <p>Professional mosquito net installation across these neighborhoods</p>
+      </div>
+      <div class="areas-grid">
+        <div class="area-group">
+          <h3>West Nairobi</h3>
+          <ul>
+            <li>Westlands</li>
+            <li>Karen</li>
+            <li>Langata</li>
+            <li>Lavington</li>
+            <li>Kileleshwa</li>
+          </ul>
+        </div>
+        <div class="area-group">
+          <h3>North Nairobi</h3>
+          <ul>
+            <li>Gigiri</li>
+            <li>Runda</li>
+            <li>Spring Valley</li>
+            <li>Muthaiga</li>
+            <li>Nyari</li>
+          </ul>
+        </div>
+        <div class="area-group">
+          <h3>East & South</h3>
+          <ul>
+            <li>Donholm</li>
+            <li>Buruburu</li>
+            <li>South B/C</li>
+            <li>Embakasi</li>
+            <li>Uhuru</li>
+          </ul>
+        </div>
+        <div class="area-group">
+          <h3>Surrounding Areas</h3>
+          <ul>
+            <li>Thika</li>
+            <li>Kiambu</li>
+            <li>Ruiru</li>
+            <li>Kikuyu</li>
+            <li>Athi River</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Design Explorer Section -->
+  <section class="design-explorer" id="design-explorer" data-aos="fade-up" data-aos-delay="100">
+    <div class="container">
+      <div class="section-header">
+        <h2>Explore Our <span>Net Designs</span></h2>
+        <p>Choose from rollers, sliders, fixed, or magnetic nets to suit your home</p>
+      </div>
+      <div class="design-tabs" role="tablist">
+        <button class="tab-button active" data-tab="fixed" role="tab" aria-selected="true" aria-controls="fixed-panel">Fixed</button>
+        <button class="tab-button" data-tab="roller" role="tab" aria-selected="false" aria-controls="roller-panel">Roller</button>
+        <button class="tab-button" data-tab="slider" role="tab" aria-selected="false" aria-controls="slider-panel">Slider</button>
+        <button class="tab-button" data-tab="magnetic" role="tab" aria-selected="false" aria-controls="magnetic-panel">Magnetic</button>
+      </div>
+      <div class="design-content">
+        <div class="design-tab active" id="fixed-panel" data-tab="fixed" role="tabpanel" data-aos="fade-right">
+          <div class="design-image">
+            <img src="Assets/images/solutions/doormesh1.jfif" alt="Fixed Mosquito Net" loading="eager">
+          </div>
+          <div class="design-info">
+            <h3>Fixed Mosquito Nets</h3>
+            <p>Perfect for permanent protection on windows and small openings. Durable and low-maintenance.</p>
+            <ul class="feature-list">
+              <li>Aluminum or PVC frames</li>
+              <li>Fiberglass or polyester mesh</li>
+              <li>5-10 year durability</li>
+              <li>From KES 1,500/m²</li>
+            </ul>
+            <form class="configurator-form" data-type="fixed" aria-label="Configure Fixed Mosquito Net">
+              <div class="input-group">
+                <label for="fixed-quantity">Quantity</label>
+                <input type="number" id="fixed-quantity" min="1" value="1" required aria-required="true">
+              </div>
+              <div class="input-group">
+                <label for="fixed-material">Material</label>
+                <select id="fixed-material" required aria-required="true">
+                  <option value="fiberglass">Fiberglass</option>
+                  <option value="polyester">Polyester</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label for="fixed-width">Width (cm)</label>
+                <input type="number" id="fixed-width" min="10" step="0.1" required aria-required="true">
+              </div>
+              <div class="input-group">
+                <label for="fixed-height">Height (cm)</label>
+                <input type="number" id="fixed-height" min="10" step="0.1" required aria-required="true">
+              </div>
+              <button type="submit" class="btn-primary">Add to Quote</button>
+            </form>
+          </div>
+        </div>
+        <div class="design-tab" id="roller-panel" data-tab="roller" role="tabpanel" data-aos="fade-right">
+          <div class="design-image">
+            <img src="Assets/images/solutions/doormesh2.jfif" alt="Roller Mosquito Net" loading="eager">
+          </div>
+          <div class="design-info">
+            <h3>Roller Mosquito Nets</h3>
+            <p>Retractable nets for easy use on large windows or doors. Sleek and modern design.</p>
+            <ul class="feature-list">
+              <li>Smooth roller mechanism</li>
+              <li>Polyester or stainless mesh</li>
+              <li>8-10 year durability</li>
+              <li>From KES 3,500/m²</li>
+            </ul>
+            <form class="configurator-form" data-type="roller" aria-label="Configure Roller Mosquito Net">
+              <div class="input-group">
+                <label for="roller-quantity">Quantity</label>
+                <input type="number" id="roller-quantity" min="1" value="1" required aria-required="true">
+              </div>
+              <div class="input-group">
+                <label for="roller-material">Material</label>
+                <select id="roller-material" required aria-required="true">
+                  <option value="polyester">Polyester</option>
+                  <option value="stainless">Stainless Steel</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label for="roller-width">Width (cm)</label>
+                <input type="number" id="roller-width" min="10" step="0.1" required aria-required="true">
+              </div>
+              <div class="input-group">
+                <label for="roller-height">Height (cm)</label>
+                <input type="number" id="roller-height" min="10" step="0.1" required aria-required="true">
+              </div>
+              <button type="submit" class="btn-primary">Add to Quote</button>
+            </form>
+          </div>
+        </div>
+        <div class="design-tab" id="slider-panel" data-tab="slider" role="tabpanel" data-aos="fade-right">
+          <div class="design-image">
+            <img src="Assets/images/solutions/materialmesh1.jfif" alt="Slider Mosquito Net" loading="eager">
+          </div>
+          <div class="design-info">
+            <h3>Slider Mosquito Nets</h3>
+            <p>Ideal for sliding doors or large windows. Easy to slide open and close.</p>
+            <ul class="feature-list">
+              <li>Aluminum tracks</li>
+              <li>Polyester or stainless mesh</li>
+              <li>8-10 year durability</li>
+              <li>From KES 3,200/m²</li>
+            </ul>
+            <form class="configurator-form" data-type="slider" aria-label="Configure Slider Mosquito Net">
+              <div class="input-group">
+                <label for="slider-quantity">Quantity</label>
+                <input type="number" id="slider-quantity" min="1" value="1" required aria-required="true">
+              </div>
+              <div class="input-group">
+                <label for="slider-material">Material</label>
+                <select id="slider-material" required aria-required="true">
+                  <option value="polyester">Polyester</option>
+                  <option value="stainless">Stainless Steel</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label for="slider-width">Width (cm)</label>
+                <input type="number" id="slider-width" min="10" step="0.1" required aria-required="true">
+              </div>
+              <div class="input-group">
+                <label for="slider-height">Height (cm)</label>
+                <input type="number" id="slider-height" min="10" step="0.1" required aria-required="true">
+              </div>
+              <button type="submit" class="btn-primary">Add to Quote</button>
+            </form>
+          </div>
+        </div>
+        <div class="design-tab" id="magnetic-panel" data-tab="magnetic" role="tabpanel" data-aos="fade-right">
+          <div class="design-image">
+            <img src="Assets/images/solutions/magneticmesh1.jfif" alt="Magnetic Mosquito Net" loading="eager">
+          </div>
+          <div class="design-info">
+            <h3>Magnetic Mosquito Nets</h3>
+            <p>Easy to install and remove. Perfect for rentals or temporary setups.</p>
+            <ul class="feature-list">
+              <li>Magnetic or velcro fixing</li>
+              <li>Fiberglass or polyester mesh</li>
+              <li>5-7 year durability</li>
+              <li>From KES 1,800/m²</li>
+            </ul>
+            <form class="configurator-form" data-type="magnetic" aria-label="Configure Magnetic Mosquito Net">
+              <div class="input-group">
+                <label for="magnetic-quantity">Quantity</label>
+                <input type="number" id="magnetic-quantity" min="1" value="1" required aria-required="true">
+              </div>
+              <div class="input-group">
+                <label for="magnetic-material">Material</label>
+                <select id="magnetic-material" required aria-required="true">
+                  <option value="fiberglass">Fiberglass</option>
+                  <option value="polyester">Polyester</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label for="magnetic-width">Width (cm)</label>
+                <input type="number" id="magnetic-width" min="10" step="0.1" required aria-required="true">
+              </div>
+              <div class="input-group">
+                <label for="magnetic-height">Height (cm)</label>
+                <input type="number" id="magnetic-height" min="10" step="0.1" required aria-required="true">
+              </div>
+              <button type="submit" class="btn-primary">Add to Quote</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section -->
+  <section class="process" id="process" data-aos="fade-up" data-aos-delay="100">
+    <div class="container">
+      <div class="section-header">
+        <h2>Our <span>Simple</span> Process</h2>
+        <p>From measurement to professional installation</p>
+      </div>
+      <div class="process-steps">
+        <div class="process-step" data-aos="zoom-in" data-aos-delay="200">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Measure Your Windows</h3>
+            <p>Use our AR tool or request a free on-site measurement.</p>
+          </div>
+        </div>
+        <div class="process-step" data-aos="zoom-in" data-aos-delay="300">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>Customize & Quote</h3>
+            <p>Choose your net design and get an instant quote.</p>
+          </div>
+        </div>
+        <div class="process-step" data-aos="zoom-in" data-aos-delay="400">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>Professional Installation</h3>
+            <p>Our team installs your nets with precision.</p>
+          </div>
+        </div>
+        <div class="process-step" data-aos="zoom-in" data-aos-delay="500">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3>Enjoy Protection</h3>
+            <p>Your home is now mosquito-free and stylish.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section" id="faq" data-aos="fade-up">
+    <div class="container">
+      <div class="section-header">
+        <h2>Frequently Asked <span>Questions</span></h2>
+        <p>Everything you need to know about our mosquito nets</p>
+      </div>
+      <div class="faq-grid">
+        <div class="faq-item">
+          <div class="faq-question">
+            <h3>How long does installation take?</h3>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Most installations are completed within 2-4 hours depending on the number of windows. We work efficiently to minimize disruption to your daily routine.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">
+            <h3>Do you offer a warranty?</h3>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Yes! We offer up to 10-year warranty on our premium nets and 5-year warranty on standard installations. All workmanship is guaranteed.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">
+            <h3>Can I install the nets myself?</h3>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>While some magnetic nets are DIY-friendly, we recommend professional installation for optimal fit and durability. Our installation comes with a warranty.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">
+            <h3>How do I clean the mosquito nets?</h3>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>Gently vacuum or wipe with a soft damp cloth. Avoid harsh chemicals. We provide specific cleaning instructions with each installation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Coverage Map Section -->
+  <section class="coverage-map" id="contact" data-aos="fade-up" data-aos-delay="100">
+    <div class="container">
+      <div class="section-header">
+        <h2>Our <span>Service</span> Coverage</h2>
+        <p>Currently serving Nairobi and surrounding areas</p>
+      </div>
+      <div class="map-container">
+        <div id="serviceMap"></div>
+        <div class="map-overlay">
+          <h3>Check Availability</h3>
+          <p>Enter your address to see installation times.</p>
+          <div class="location-search">
+            <input type="text" id="locationInput" placeholder="Enter your address" aria-label="Enter your address to check coverage">
+            <button id="checkLocation" class="btn-primary" aria-label="Check service coverage">Check Coverage</button>
+          </div>
+          <div class="delivery-estimate" id="deliveryEstimate">
+            <i class="fas fa-truck"></i>
+            <span>Estimated installation: <strong id="installTime">--</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews Section -->
+  <section class="reviews" id="testimonials" data-aos="fade-up" data-aos-delay="100">
+    <div class="container">
+      <div class="section-header">
+        <h2>What Our Customers Say</h2>
+        <p>Real feedback from homeowners we've protected</p>
+      </div>
+      <div class="review-grid" id="reviewsContainer"></div>
+      <form id="reviewForm" aria-label="Submit a customer review">
+        <select name="rating" required aria-required="true">
+          <option value="">Select Rating</option>
+          <option value="5">★★★★★</option>
+          <option value="4">★★★★☆</option>
+          <option value="3">★★★☆☆</option>
+          <option value="2">★★☆☆☆</option>
+          <option value="1">★☆☆☆☆</option>
+        </select>
+        <textarea name="comment" placeholder="Share your experience..." required aria-required="true"></textarea>
+        <button type="submit" class="btn-primary">Submit Review</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Quote Modal -->
+  <div class="modal" id="quoteModal" role="dialog" aria-labelledby="quoteModalTitle">
+    <div class="modal-container">
+      <button class="modal-close" id="closeQuote" aria-label="Close Quote Modal">&times;</button>
+      <div class="modal-header">
+        <h2 id="quoteModalTitle">Instant Quote Generator</h2>
+        <p>Get a free estimate in just a few steps</p>
+      </div>
+      <div class="modal-body">
+        <form id="smartQuoteForm" aria-label="Generate a quote for mosquito nets">
+          <div class="form-step active" data-step="1">
+            <h3>Property Type</h3>
+            <div class="option-grid">
+              <label class="option-card">
+                <input type="radio" name="propertyType" value="residential" checked aria-label="Residential property">
+                <div class="card-content">
+                  <i class="fas fa-home"></i>
+                  <span>Residential</span>
+                </div>
+              </label>
+              <label class="option-card">
+                <input type="radio" name="propertyType" value="commercial" aria-label="Commercial property">
+                <div class="card-content">
+                  <i class="fas fa-building"></i>
+                  <span>Commercial</span>
+                </div>
+              </label>
+            </div>
+            <button type="button" class="btn-primary next-step">Next</button>
+          </div>
+          <div class="form-step" data-step="2">
+            <h3>Window/Door Details</h3>
+            <div class="input-group">
+              <label for="windowWidth">Width (meters)</label>
+              <input type="number" step="0.1" min="0.5" id="windowWidth" required aria-required="true">
+            </div>
+            <div class="input-group">
+              <label for="windowHeight">Height (meters)</label>
+              <input type="number" step="0.1" min="0.5" id="windowHeight" required aria-required="true">
+            </div>
+            <div class="input-group">
+              <label for="windowCount">Number of Windows/Doors</label>
+              <input type="number" min="1" value="1" id="windowCount" required aria-required="true">
+            </div>
+            <div class="input-group">
+              <label for="meshType">Net Type</label>
+              <select id="meshType" required aria-required="true">
+                <option value="fixed">Fixed</option>
+                <option value="roller">Roller</option>
+                <option value="slider">Slider</option>
+                <option value="magnetic">Magnetic</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label for="materialType">Material</label>
+              <select id="materialType" required aria-required="true">
+                <option value="fiberglass">Fiberglass</option>
+                <option value="polyester">Polyester</option>
+                <option value="stainless">Stainless Steel</option>
+              </select>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn-outline prev-step">Back</button>
+              <button type="button" class="btn-primary next-step">Next</button>
+            </div>
+          </div>
+          <div class="form-step" data-step="3">
+            <h3>Location & Contact</h3>
+            <div class="input-group">
+              <label for="installLocation">Your Location</label>
+              <div class="location-input">
+                <input type="text" id="installLocation" placeholder="Enter your address" required aria-required="true">
+                <button type="button" id="detectLocation" class="btn-icon" aria-label="Detect current location">
+                  <i class="fas fa-location-arrow"></i>
+                </button>
+              </div>
+            </div>
+            <div class="input-group">
+              <label for="quoteEmail">Email Address</label>
+              <input type="email" id="quoteEmail" placeholder="For your quote details" required aria-required="true">
+            </div>
+            <div class="payment-options">
+              <button id="mpesapay" class="btn-payment">
+                <img src="Assets/images/mpesa/mpesa-logo.png" loading="eager" alt="M-Pesa">
+                Pay 50% Deposit via M-Pesa
+                <span class="secure-badge">Secure Payment</span>
+              </button>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn-outline prev-step">Back</button>
+              <button type="submit" class="btn-primary">Get Instant Quote</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- M-Pesa Modal -->
+  <div class="modal" id="mpesaModal" role="dialog" aria-labelledby="mpesaModalTitle">
+    <div class="modal-container">
+      <button class="modal-close" id="closeMpesaModal" aria-label="Close M-Pesa Modal">&times;</button>
+      <div class="modal-header">
+        <h2 id="mpesaModalTitle">Confirm M-Pesa Payment</h2>
+        <p>Pay a 50% deposit to confirm your order.</p>
+      </div>
+      <div class="modal-body">
+        <p><strong>Total Quote:</strong> KES <span id="mpesaTotal">0</span></p>
+        <p><strong>Deposit (50%):</strong> KES <span id="mpesaDeposit">0</span></p>
+        <div class="input-group">
+          <label for="mpesaPhone">Phone Number</label>
+          <input type="tel" id="mpesaPhone" placeholder="e.g., 0712345678" required aria-required="true">
+        </div>
+        <p class="trust-note">✅ Secure payment via M-Pesa. Full refund if we can't deliver.</p>
+        <div class="form-actions">
+          <button type="button" class="btn-outline" id="cancelMpesa">Cancel</button>
+          <button type="button" class="btn-payment" id="confirmMpesa">
+            <img src="Assets/images/mpesa/mpesa-logo.png" loading="eager" alt="M-Pesa">
+            Confirm Deposit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sign-In Modal -->
+  <div class="modal" id="signInModal" role="dialog" aria-labelledby="signInModalTitle">
+    <div class="modal-container">
+      <button class="modal-close" id="closeSignInModal" aria-label="Close Sign-In Modal">&times;</button>
+      <div class="modal-header">
+        <h2 id="signInModalTitle">Sign In</h2>
+        <p>Access your dashboard and track quotes.</p>
+      </div>
+      <div class="modal-body">
+        <form id="signInForm" aria-label="Sign in to your account">
+          <div class="input-group">
+            <label for="signInEmail">Email</label>
+            <input type="email" id="signInEmail" placeholder="e.g., user@example.com" required aria-required="true">
+          </div>
+          <div class="input-group">
+            <label for="signInPassword">Password</label>
+            <input type="password" id="signInPassword" placeholder="Enter your password" required aria-required="true">
+          </div>
+          <div class="form-options">
+            <label>
+              <input type="checkbox" name="remember" aria-label="Remember me"> Remember me
+            </label>
+            <a href="#" class="forgot-password">Forgot Password?</a>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">Sign In</button>
+            <p>Don't have an account? <a href="#" id="showRegisterModal">Sign Up</a></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div class="modal" id="registerModal" role="dialog" aria-labelledby="registerModalTitle">
+    <div class="modal-container">
+      <button class="modal-close" id="closeRegisterModal" aria-label="Close Register Modal">&times;</button>
+      <div class="modal-header">
+        <h2 id="registerModalTitle">Create an Account</h2>
+        <p>Join Expert Polyhomes to manage your quotes.</p>
+      </div>
+      <div class="modal-body">
+        <form id="registerForm" aria-label="Create a new account">
+          <div class="input-group">
+            <label for="registerName">Full Name</label>
+            <input type="text" id="registerName" placeholder="e.g., John Doe" required aria-required="true">
+          </div>
+          <div class="input-group">
+            <label for="registerEmail">Email</label>
+            <input type="email" id="registerEmail" placeholder="e.g., user@example.com" required aria-required="true">
+          </div>
+          <div class="input-group">
+            <label for="registerPassword">Password</label>
+            <input type="password" id="registerPassword" placeholder="Create a password" required aria-required="true">
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">Sign Up</button>
+            <p>Already have an account? <a href="#" id="showSignInModal">Sign In</a></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer" data-aos="fade-up" data-aos-delay="100">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo">
+            <span class="logo-icon">EP</span>
+            <span class="logo-text">EXPERT POLYHOMES</span>
+          </div>
+          <p>Nairobi's trusted mosquito net installation experts. Protecting homes since 2020.</p>
+          <div class="security-badges">
+            <div class="badge"><i class="fas fa-lock"></i> Secure Payments</div>
+            <div class="badge"><i class="fas fa-certificate"></i> Certified Installers</div>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h3>Solutions</h3>
+          <ul>
+            <li><a href="#design-explorer" data-tab="fixed">Fixed Nets</a></li>
+            <li><a href="#design-explorer" data-tab="roller">Roller Nets</a></li>
+            <li><a href="#design-explorer" data-tab="slider">Slider Nets</a></li>
+            <li><a href="#design-explorer" data-tab="magnetic">Magnetic Nets</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h3>Company</h3>
+          <ul>
+            <li><a href="#process">Our Process</a></li>
+            <li><a href="#design-explorer">Design Guide</a></li>
+            <li><a href="#testimonials">Customer Stories</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h3>Contact Us</h3>
+          <div class="contact-method">
+            <i class="fas fa-phone"></i>
+            <span>+254 723 544 097</span>
+          </div>
+          <div class="contact-method">
+            <i class="fas fa-envelope"></i>
+            <span>polyhomesexpert@gmail.com</span>
+          </div>
+          <div class="contact-method">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Nairobi, Kenya</span>
+          </div>
+          <div class="social-links">
+            <a href="#" class="social-icon" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="copyright">
+          &copy; 2025 EXPERT POLYHOMES. All rights reserved.
+        </div>
+        <div class="legal-links">
+          <a href="/privacy-policy.html">Privacy Policy</a>
+          <a href="/terms-of-service.html">Terms of Service</a>
+          <a href="/cookie-policy.html">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts loaded at the end for better performance -->
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" defer></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js" defer></script>
+  <script src="script.js" defer></script>
+</body>
+</html>
